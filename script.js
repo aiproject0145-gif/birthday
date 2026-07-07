@@ -59,17 +59,20 @@
     resizeCanvas();
   });
 
-  /* ---------------- Confetti burst (gift open) ---------------- */
+  /* ---------------- Confetti burst (gift open / cake cut) ---------------- */
 
-  function burstConfetti(originX, originY) {
-    const colors = ["#e9b65e", "#ff6f91", "#c9c2e8", "#f5d89a", "#fbf7ff"];
-    const bits = Array.from({ length: reduceMotion ? 0 : 60 }, () => ({
+  function burstConfetti(originX, originY, opts = {}) {
+    const colors = opts.colors || ["#e9b65e", "#ff6f91", "#c9c2e8", "#f5d89a", "#fbf7ff"];
+    const circleRatio = opts.circleRatio || 0;
+    const count = reduceMotion ? 0 : opts.count || 60;
+    const bits = Array.from({ length: count }, () => ({
       x: originX,
       y: originY,
       vx: (Math.random() - 0.5) * 8,
       vy: Math.random() * -8 - 3,
       size: Math.random() * 5 + 3,
       color: colors[Math.floor(Math.random() * colors.length)],
+      shape: Math.random() < circleRatio ? "circle" : "rect",
       rot: Math.random() * Math.PI,
       vr: (Math.random() - 0.5) * 0.3,
       life: 0,
@@ -103,7 +106,13 @@
         ctx.rotate(b.rot);
         ctx.fillStyle = b.color;
         ctx.globalAlpha = Math.max(1 - b.life / 90, 0);
-        ctx.fillRect(-b.size / 2, -b.size / 4, b.size, b.size / 2);
+        if (b.shape === "circle") {
+          ctx.beginPath();
+          ctx.arc(0, 0, b.size / 2.4, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillRect(-b.size / 2, -b.size / 4, b.size, b.size / 2);
+        }
         ctx.restore();
       }
       ctx.globalAlpha = 1;
@@ -162,13 +171,32 @@
     card.classList.add("visible");
     startTypewriter();
     document.removeEventListener("keydown", onKeydown);
+    scheduleAutoCut(reduceMotion ? 500 : 1400);
+  }
+
+  function beginOpen() {
+    if (enterBtn.disabled) return;
+    enterBtn.disabled = true;
+
+    if (reduceMotion) {
+      openCard();
+      return;
+    }
+
+    enterBtn.textContent = "Opening your wish...";
+    const hintLine = document.createElement("p");
+    hintLine.className = "line hint-line";
+    hintLine.textContent = "> unwrapping birthday.exe for Irum ✨";
+    enterBtn.insertAdjacentElement("beforebegin", hintLine);
+
+    setTimeout(openCard, 700);
   }
 
   function onKeydown(e) {
-    if (e.key === "Enter" && !enterBtn.hidden) openCard();
+    if (e.key === "Enter" && !enterBtn.hidden && !enterBtn.disabled) beginOpen();
   }
 
-  enterBtn.addEventListener("click", openCard);
+  enterBtn.addEventListener("click", beginOpen);
   document.addEventListener("keydown", onKeydown);
   runIntro();
 
@@ -255,23 +283,51 @@
   const sliceEl = document.getElementById("slice");
   const wishHintEl = document.getElementById("wishHint");
   let cakeBusy = false;
+  let autoCutTimer = null;
+  const AUTO_CUT_GAP = 5200;
 
-  cakeBtn.addEventListener("click", () => {
+  const FLAVOR_COUNT = 3;
+  let flavorIndex = 0;
+  const CAKE_SCALES = [1, 0.88, 0.76, 0.64, 0.54];
+  let sizeStep = 0;
+
+  function scheduleAutoCut(delay) {
+    clearTimeout(autoCutTimer);
+    autoCutTimer = setTimeout(() => runCakeCut(true), delay);
+  }
+
+  function serveSlice() {
+    // cycle the cake's flavor color on every cut
+    flavorIndex = (flavorIndex + 1) % FLAVOR_COUNT;
+    cakeBtn.classList.remove("flavor-0", "flavor-1", "flavor-2");
+    if (flavorIndex > 0) cakeBtn.classList.add(`flavor-${flavorIndex}`);
+
+    // shrink the remaining cake with each slice; replenish once fully served
+    sizeStep += 1;
+    const replenished = sizeStep >= CAKE_SCALES.length;
+    if (replenished) sizeStep = 0;
+    cakeBtn.style.setProperty("--cake-scale", CAKE_SCALES[sizeStep]);
+
+    return replenished;
+  }
+
+  function runCakeCut(auto) {
     if (cakeBusy) return;
     cakeBusy = true;
     cakeBtn.classList.add("cutting");
     flameEl.classList.add("out");
-    wishHintEl.textContent = "cutting the cake...";
+    wishHintEl.textContent = auto ? "serving another slice..." : "cutting the cake...";
 
     if (reduceMotion) {
-      const rect = cakeBtn.getBoundingClientRect();
-      burstConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
-      wishHintEl.textContent = "🍰 first slice is yours!";
+      const replenished = serveSlice();
+      wishHintEl.textContent = replenished ? "🎂 a fresh cake appears!" : "🍰 a fresh slice, served with love";
       setTimeout(() => {
         flameEl.classList.remove("out");
         cakeBtn.classList.remove("cutting");
-        wishHintEl.textContent = "tap to cut the cake 🔪";
+        cakeBtn.classList.add("cut");
+        wishHintEl.textContent = "tap to cut again 🔪";
         cakeBusy = false;
+        scheduleAutoCut(AUTO_CUT_GAP);
       }, 1800);
       return;
     }
@@ -286,21 +342,31 @@
       void knifeEl.offsetWidth;
       knifeEl.classList.add("slicing");
       sliceEl.classList.add("serving");
+      cakeBtn.classList.add("cut");
+
+      const replenished = serveSlice();
 
       const rect = cakeBtn.getBoundingClientRect();
-      burstConfetti(rect.left + rect.width / 2, rect.top + rect.height * 0.6);
-      wishHintEl.textContent = "🍰 first slice is yours!";
-    }, 350);
+      burstConfetti(rect.left + rect.width / 2, rect.top + rect.height * 0.6, {
+        colors: ["#e9b65e", "#fff6d8", "#ff6f91", "#f5d89a", "#7a5a2a"],
+        count: 56,
+        circleRatio: 0.5,
+      });
+      wishHintEl.textContent = replenished ? "🎂 a fresh cake appears!" : "🍰 a fresh slice, served with love";
+    }, 650);
 
     setTimeout(() => {
       flameEl.classList.remove("out");
       knifeEl.classList.remove("slicing");
       sliceEl.classList.remove("serving");
       cakeBtn.classList.remove("cutting");
-      wishHintEl.textContent = "tap to cut the cake 🔪";
+      wishHintEl.textContent = "tap to cut again 🔪";
       cakeBusy = false;
-    }, 2600);
-  });
+      scheduleAutoCut(AUTO_CUT_GAP);
+    }, 4600);
+  }
+
+  cakeBtn.addEventListener("click", () => runCakeCut(false));
 
   /* ---------------- Name: letter-by-letter color cycle ---------------- */
 

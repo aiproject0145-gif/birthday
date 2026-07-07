@@ -43,17 +43,21 @@
       <p class="name" aria-label="Mam Irum Shabbir"><span class="letters" id="nameLetters" aria-hidden="true">Mam Irum Shabbir</span></p>
       <p class="role">Floor Supervisor <span class="dot">•</span> Ibex, Jazz Campaign</p>
 
-      <button class="cake" id="cake" type="button" aria-label="Tap to blow the candle and cut the cake">
-        <span class="wish-hint" id="wishHint">tap to cut the cake 🔪</span>
-        <span class="knife" id="knife"></span>
-        <span class="slice" id="slice"></span>
-        <span class="smoke" id="smoke"></span>
-        <span class="flame" id="flame"></span>
-        <span class="candle"></span>
-        <span class="tier tier-top"><span></span><span></span><span></span></span>
-        <span class="tier tier-bottom"><span></span><span></span><span></span><span></span></span>
-        <span class="plate"></span>
-      </button>
+      <div class="cake-stage">
+        <span class="cake-shadow" aria-hidden="true"></span>
+        <button class="cake" id="cake" type="button" aria-label="Tap to blow the candle and cut the cake">
+          <span class="wish-hint" id="wishHint">tap to cut the cake 🔪</span>
+          <span class="knife" id="knife"></span>
+          <span class="slice" id="slice"></span>
+          <span class="smoke" id="smoke"></span>
+          <span class="flame" id="flame"></span>
+          <span class="candle"></span>
+          <span class="tier tier-top"><span></span><span></span><span></span></span>
+          <span class="tier tier-bottom"><span></span><span></span><span></span><span></span></span>
+          <span class="cut-mark"></span>
+          <span class="plate"></span>
+        </button>
+      </div>
     </header>
 
     <div class="scroll-cue" id="scrollCue" aria-hidden="true">
@@ -95,6 +99,7 @@
 
 <span class="fn">celebrate</span>(wisher, <span class="str">"Irum Shabbir"</span>);<span class="blink-cursor">▍</span></code></pre>
       <p class="sig-name">Burhan Ali <span class="sig-sep">·</span> <span class="sig-role">Artificial Intelligence Developer</span></p>
+      <p class="sig-org">Aria Technology</p>
     </footer>
 
   </main>
