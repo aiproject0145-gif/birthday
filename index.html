@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Happy Birthday, Mam Irum Shabbir 🎉</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Sacramento&family=Poppins:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <div class="intro" id="intro">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span>
+        <span class="terminal-title">birthday_wish.exe</span>
+      </div>
+      <div class="terminal-body">
+        <p class="line" id="introLine1"></p>
+        <p class="line" id="introLine2"></p>
+        <p class="line" id="introLine3"></p>
+        <button class="enter-btn" id="enterBtn" hidden>Open Wish →</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="card" id="card">
+
+    <header class="hero">
+      <div class="balloons" aria-hidden="true">
+        <span class="balloon b1"></span>
+        <span class="balloon b2"></span>
+        <span class="balloon b3"></span>
+        <span class="balloon b4"></span>
+      </div>
+
+      <p class="eyebrow">A birthday wish, compiled with care</p>
+      <h1 class="headline"><span class="script">Happy</span> Birthday</h1>
+      <p class="name" aria-label="Mam Irum Shabbir"><span class="letters" id="nameLetters" aria-hidden="true">Mam Irum Shabbir</span></p>
+      <p class="role">Floor Supervisor <span class="dot">•</span> Ibex, Jazz Campaign</p>
+
+      <button class="cake" id="cake" type="button" aria-label="Tap to blow the candle and cut the cake">
+        <span class="wish-hint" id="wishHint">tap to cut the cake 🔪</span>
+        <span class="knife" id="knife"></span>
+        <span class="slice" id="slice"></span>
+        <span class="smoke" id="smoke"></span>
+        <span class="flame" id="flame"></span>
+        <span class="candle"></span>
+        <span class="tier tier-top"><span></span><span></span><span></span></span>
+        <span class="tier tier-bottom"><span></span><span></span><span></span><span></span></span>
+        <span class="plate"></span>
+      </button>
+    </header>
+
+    <div class="scroll-cue" id="scrollCue" aria-hidden="true">
+      <span class="mouse"><span class="wheel"></span></span>
+      <span class="scroll-text">scroll for your wish</span>
+    </div>
+
+    <section class="message reveal">
+      <p class="typewriter" id="typewriter" aria-live="polite"></p>
+      <span class="caret" id="caret"></span>
+    </section>
+
+    <section class="gift-section reveal">
+      <div class="gift-wrap">
+        <span class="gift-ring"></span>
+        <button class="gift" id="giftBox" aria-label="Open your birthday gift">
+          <span class="gift-lid"></span>
+          <span class="gift-box"></span>
+          <span class="gift-ribbon-v"></span>
+          <span class="gift-ribbon-h"></span>
+        </button>
+        <span class="tap-icon" aria-hidden="true">👆</span>
+      </div>
+      <p class="gift-hint" id="giftHint">tap the gift 🎁</p>
+
+      <div class="quote-card" id="quoteCard">
+        <p>&ldquo;The best floors don&rsquo;t just run &mdash; they run because someone leads with patience, presence, and heart. Here&rsquo;s to the person who makes the shift feel a little lighter for everyone else.&rdquo;</p>
+      </div>
+    </section>
+
+    <footer class="signature reveal">
+      <div class="monogram" aria-hidden="true">BA</div>
+      <p class="sig-lead">// this wish was written and shipped by</p>
+      <pre class="code-card"><code><span class="kw">const</span> wisher = {
+  name: <span class="str">"Burhan Ali"</span>,
+  role: <span class="str">"Artificial Intelligence Developer"</span>,
+  wish: <span class="str">"May your year run without a single exception 🎂✨"</span>,
+};
+
+<span class="fn">celebrate</span>(wisher, <span class="str">"Irum Shabbir"</span>);<span class="blink-cursor">▍</span></code></pre>
+      <p class="sig-name">Burhan Ali <span class="sig-sep">·</span> <span class="sig-role">Artificial Intelligence Developer</span></p>
+    </footer>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
