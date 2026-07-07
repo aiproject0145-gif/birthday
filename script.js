@@ -1,6 +1,18 @@
 (() => {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* ---------------- Scroll progress bar ---------------- */
+
+  const scrollProgressBar = document.getElementById("scrollProgressBar");
+  function updateScrollProgress() {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+    scrollProgressBar.style.width = `${Math.min(Math.max(pct, 0), 100)}%`;
+  }
+  window.addEventListener("scroll", updateScrollProgress, { passive: true });
+  window.addEventListener("resize", updateScrollProgress);
+  updateScrollProgress();
+
   /* ---------------- Ambient background particles ---------------- */
 
   const canvas = document.getElementById("bg-canvas");
