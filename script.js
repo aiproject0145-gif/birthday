@@ -218,6 +218,7 @@
     giftBox.classList.add("open");
     giftHint.textContent = "made just for you ✨";
     quoteCard.classList.add("visible");
+    document.querySelector(".gift-section").classList.add("opened");
 
     const rect = giftBox.getBoundingClientRect();
     burstConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
@@ -245,31 +246,98 @@
     }
   }
 
-  /* ---------------- Candle "make a wish" interaction ---------------- */
+  /* ---------------- Cake: make a wish + cut the cake ---------------- */
 
   const cakeBtn = document.getElementById("cake");
   const flameEl = document.getElementById("flame");
   const smokeEl = document.getElementById("smoke");
-  let candleBusy = false;
+  const knifeEl = document.getElementById("knife");
+  const sliceEl = document.getElementById("slice");
+  const wishHintEl = document.getElementById("wishHint");
+  let cakeBusy = false;
 
   cakeBtn.addEventListener("click", () => {
-    if (candleBusy || flameEl.classList.contains("out")) return;
-    candleBusy = true;
+    if (cakeBusy) return;
+    cakeBusy = true;
+    cakeBtn.classList.add("cutting");
     flameEl.classList.add("out");
+    wishHintEl.textContent = "cutting the cake...";
 
-    if (!reduceMotion) {
-      smokeEl.classList.remove("puff");
-      void smokeEl.offsetWidth;
-      smokeEl.classList.add("puff");
+    if (reduceMotion) {
       const rect = cakeBtn.getBoundingClientRect();
-      burstConfetti(rect.left + rect.width / 2, rect.top + 20);
+      burstConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      wishHintEl.textContent = "🍰 first slice is yours!";
+      setTimeout(() => {
+        flameEl.classList.remove("out");
+        cakeBtn.classList.remove("cutting");
+        wishHintEl.textContent = "tap to cut the cake 🔪";
+        cakeBusy = false;
+      }, 1800);
+      return;
     }
+
+    smokeEl.classList.remove("puff");
+    void smokeEl.offsetWidth;
+    smokeEl.classList.add("puff");
+
+    setTimeout(() => {
+      knifeEl.classList.remove("slicing");
+      sliceEl.classList.remove("serving");
+      void knifeEl.offsetWidth;
+      knifeEl.classList.add("slicing");
+      sliceEl.classList.add("serving");
+
+      const rect = cakeBtn.getBoundingClientRect();
+      burstConfetti(rect.left + rect.width / 2, rect.top + rect.height * 0.6);
+      wishHintEl.textContent = "🍰 first slice is yours!";
+    }, 350);
 
     setTimeout(() => {
       flameEl.classList.remove("out");
-      candleBusy = false;
-    }, 2200);
+      knifeEl.classList.remove("slicing");
+      sliceEl.classList.remove("serving");
+      cakeBtn.classList.remove("cutting");
+      wishHintEl.textContent = "tap to cut the cake 🔪";
+      cakeBusy = false;
+    }, 2600);
   });
+
+  /* ---------------- Name: letter-by-letter color cycle ---------------- */
+
+  const nameLetters = document.getElementById("nameLetters");
+  if (nameLetters) {
+    const text = nameLetters.textContent;
+    nameLetters.textContent = "";
+    text.split("").forEach((ch, i) => {
+      const span = document.createElement("span");
+      span.className = "letter" + (ch === " " ? " is-space" : "");
+      span.textContent = ch === " " ? " " : ch;
+      span.style.setProperty("--d", `${i * 0.12}s`);
+      nameLetters.appendChild(span);
+    });
+  }
+
+  /* ---------------- Scroll cue ---------------- */
+
+  const scrollCue = document.getElementById("scrollCue");
+  if (scrollCue) {
+    const showScrollCue = () => {
+      if (!card.classList.contains("visible")) return;
+      scrollCue.classList.add("visible");
+    };
+    const hideOnScroll = () => {
+      scrollCue.classList.add("fade-out");
+      window.removeEventListener("scroll", hideOnScroll);
+    };
+    const cardObserver = new MutationObserver(() => {
+      if (card.classList.contains("visible")) {
+        setTimeout(showScrollCue, 400);
+        cardObserver.disconnect();
+      }
+    });
+    cardObserver.observe(card, { attributes: true, attributeFilter: ["class"] });
+    window.addEventListener("scroll", hideOnScroll, { passive: true });
+  }
 
   /* ---------------- Balloon parallax (fine pointers only) ---------------- */
 
